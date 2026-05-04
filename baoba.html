@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Legado do Baobá | Arte</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #faf7f2; /* Cream background */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .overlay {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            animation: fadeInText 4s ease-in-out 6s forwards;
+            background: radial-gradient(circle, rgba(250,247,242,0.8) 0%, rgba(250,247,242,0) 70%);
+            padding: 40px;
+            border-radius: 50%;
+        }
+
+        h1 {
+            font-size: 5rem;
+            color: #8c4a2f; /* Rust */
+            font-weight: 300;
+            margin: 0 0 10px 0;
+            letter-spacing: 0.05em;
+        }
+
+        p {
+            font-size: 1.8rem;
+            color: #6b7f6e; /* Sage */
+            font-style: italic;
+            margin: 0;
+            letter-spacing: 0.1em;
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 10;
+            padding: 14px 32px;
+            border: 1px solid #8c4a2f;
+            color: #8c4a2f;
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Instrument Sans', sans-serif;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: auto;
+        }
+        
+        .back-btn:hover {
+            background: #8c4a2f;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(140, 74, 47, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">Voltar ao Site</a>
+    <canvas id="treeCanvas"></canvas>
+    <div class="overlay">
+        <h1>O Legado do Baobá</h1>
+        <p>A ciência como raiz, a empatia como sombra.</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        
+        let width, height;
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            // Fill background initially
+            ctx.fillStyle = '#faf7f2';
+            ctx.fillRect(0, 0, width, height);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Brand colors
+        const rust = '#8c4a2f';
+        const sage = '#6b7f6e';
+        const sageLight = '#a8bfab';
+
+        let branches = [];
+        let leaves = [];
+        
+        function initTree() {
+            branches = [];
+            leaves = [];
+            ctx.fillStyle = '#faf7f2';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Start the Baobab trunk (wide and thick)
+            branches.push({
+                x: width / 2,
+                y: height + 20,
+                angle: -Math.PI / 2,
+                length: height * 0.4, // Trunk height
+                width: Math.min(width * 0.15, 120), // Extremely thick trunk
+                generation: 0,
+                progress: 0,
+                done: false
+            });
+            requestAnimationFrame(animate);
+        }
+
+        function drawBranch(branch) {
+            // Speed of drawing
+            if (branch.progress < 1) {
+                branch.progress += branch.generation === 0 ? 0.008 : 0.02; 
+            } else if (!branch.done) {
+                branch.done = true;
+                
+                // Branching logic tailored for a Baobab silhouette
+                if (branch.generation < 6) {
+                    // Gen 0 is the trunk. A baobab splits widely at the top into several large branches
+                    let numBranches = branch.generation === 0 ? 6 : (Math.random() > 0.4 ? 2 : 3);
+                    
+                    for (let i = 0; i < numBranches; i++) {
+                        let spread = Math.PI * 0.8; 
+                        let angleOffset = (Math.random() * spread) - (spread / 2);
+                        
+                        if (branch.generation === 0) {
+                            // Crown burst of the baobab
+                            spread = Math.PI * 0.9;
+                            angleOffset = -spread/2 + (spread / (numBranches-1)) * i + (Math.random()*0.2-0.1);
+                        }
+                        
+                        let lengthFactor = branch.generation === 0 ? 0.35 : (0.6 + Math.random() * 0.3);
+                        let widthFactor = branch.generation === 0 ? 0.15 : 0.6;
+                        
+                        branches.push({
+                            x: branch.x + Math.cos(branch.angle) * branch.length,
+                            y: branch.y + Math.sin(branch.angle) * branch.length,
+                            angle: branch.angle + angleOffset,
+                            length: branch.length * lengthFactor,
+                            width: branch.width * widthFactor,
+                            generation: branch.generation + 1,
+                            progress: 0,
+                            done: false
+                        });
+                    }
+                } else {
+                    // Create leaves at the tips
+                    for (let i = 0; i < 5; i++) {
+                        leaves.push({
+                            x: branch.x + Math.cos(branch.angle) * branch.length + (Math.random()*30-15),
+                            y: branch.y + Math.sin(branch.angle) * branch.length + (Math.random()*30-15),
+                            radius: 0,
+                            maxRadius: 4 + Math.random() * 8,
+                            color: Math.random() > 0.6 ? sage : sageLight
+                        });
+                    }
+                }
+            }
+
+            const startX = branch.x;
+            const startY = branch.y;
+            const endX = branch.x + Math.cos(branch.angle) * (branch.length * branch.progress);
+            const endY = branch.y + Math.sin(branch.angle) * (branch.length * branch.progress);
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            
+            // Create a gradient for the wood texture
+            let gradient = ctx.createLinearGradient(
+                startX - Math.cos(branch.angle + Math.PI/2) * branch.width,
+                startY - Math.sin(branch.angle + Math.PI/2) * branch.width,
+                startX + Math.cos(branch.angle + Math.PI/2) * branch.width,
+                startY + Math.sin(branch.angle + Math.PI/2) * branch.width
+            );
+            gradient.addColorStop(0, '#5a2d1a'); // Darker rust
+            gradient.addColorStop(0.5, rust);
+            gradient.addColorStop(1, '#3a1d10');
+            
+            ctx.strokeStyle = gradient;
+            
+            // Taper width slightly as it grows
+            let currentWidth = branch.width;
+            if (branch.generation > 0) {
+                currentWidth = branch.width * (1 - branch.progress * 0.2);
+            }
+            
+            ctx.lineWidth = currentWidth;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+
+        function drawLeaf(leaf) {
+            if (leaf.radius < leaf.maxRadius) {
+                leaf.radius += 0.2;
+                ctx.beginPath();
+                ctx.arc(leaf.x, leaf.y, leaf.radius, 0, Math.PI * 2);
+                ctx.fillStyle = leaf.color;
+                ctx.globalAlpha = 0.85;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+            }
+        }
+
+        function animate() {
+            // Slight fade to create organic blending, but not clearing fully to keep the branches
+            // Drawing over the canvas with a very transparent background creates a "glow" but we want solid wood.
+            // So we don't clear the rect, we just keep drawing.
+            
+            let isGrowing = false;
+
+            // Draw branches layer
+            branches.forEach(branch => {
+                if (!branch.done) isGrowing = true;
+                if (!branch.done) drawBranch(branch);
+            });
+
+            // Draw leaves layer
+            leaves.forEach(leaf => {
+                if (leaf.radius < leaf.maxRadius) {
+                    isGrowing = true;
+                    drawLeaf(leaf);
+                }
+            });
+
+            if (isGrowing) {
+                requestAnimationFrame(animate);
+            }
+        }
+
+        // Delay the start slightly for effect
+        setTimeout(initTree, 800);
+
+    </script>
+</body>
+</html>
