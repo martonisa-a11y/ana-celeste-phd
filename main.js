@@ -172,7 +172,7 @@ if (form) {
       const texto = encodeURIComponent(
         `Olá, Dra. Ana Celeste!\n\nMeu nome é ${nome}.\n\n${mensagem}`
       );
-      window.open(`https://wa.me/5585992242529?text=${texto}`, '_blank');
+      window.open(`https://wa.me/558592242529?text=${texto}`, '_blank');
       submitBtn.disabled    = false;
       submitBtn.textContent = 'Enviar mensagem';
       return;
