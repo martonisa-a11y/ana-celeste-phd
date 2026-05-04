@@ -197,7 +197,36 @@ ul { list-style: none; }
   max-width: var(--max-w);
   margin-inline: auto;
 }
-.nav__logo img { height: 38px; width: auto; }
+.nav__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+}
+.nav__logo img { height: 36px; width: auto; flex-shrink: 0; }
+.nav__logo-text {
+  font-family: var(--f-display);
+  font-size: 1.125rem;
+  font-weight: 300;
+  color: var(--c-text);
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.nav__logo-text em {
+  font-style: italic;
+  color: var(--c-sage);
+}
+.nav__logo-text strong {
+  font-weight: 400;
+  font-size: 0.8em;
+  color: var(--c-text-3);
+  letter-spacing: 0.08em;
+}
+/* Footer logo — versão invertida */
+.footer__brand .nav__logo-text { color: rgba(247,244,238,0.85); }
+.footer__brand .nav__logo-text em { color: var(--c-warm); }
+.footer__brand .nav__logo-text strong { color: rgba(247,244,238,0.5); }
+.footer__brand .nav__logo img { filter: brightness(0) invert(1); opacity: 0.85; }
 .nav__links { display: none; align-items: center; gap: 2.5rem; }
 .nav__links a:not(.btn) {
   font-size: 0.9375rem;
