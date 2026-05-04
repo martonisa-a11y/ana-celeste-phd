@@ -137,68 +137,48 @@ document.querySelectorAll('.link').forEach(link => {
   });
 });
 
-// ── Contact form — Formspree AJAX ─────────────────────────────
+// ── Contact form — abre WhatsApp com mensagem formatada ───────
 const form = document.getElementById('contactForm');
 if (form) {
   const submitBtn  = document.getElementById('formSubmitBtn');
   const successMsg = document.getElementById('formSuccess');
-  const errorMsg   = document.getElementById('formError');
 
-  // Recupera o form ID do atributo data- (editar data-formspree-id no HTML)
-  const formId = form.dataset.formspreeId;
-  const endpoint = formId && formId !== 'SEU_FORM_ID'
-    ? `https://formspree.io/f/${formId}`
-    : null;
-
-  form.addEventListener('submit', async e => {
+  form.addEventListener('submit', e => {
     e.preventDefault();
 
-    // Valida campos obrigatórios
     const nome     = form.querySelector('#nome').value.trim();
+    const tipo     = form.querySelector('#tipo');
+    const tipoTxt  = tipo.options[tipo.selectedIndex].text;
+    const email    = form.querySelector('#email').value.trim();
     const mensagem = form.querySelector('#mensagem').value.trim();
+
     if (!nome || !mensagem) {
-      form.querySelector('#nome').reportValidity();
+      form.querySelector(nome ? '#mensagem' : '#nome').focus();
       return;
     }
 
-    // Estado: carregando
-    submitBtn.disabled    = true;
-    submitBtn.textContent = 'Enviando…';
-    successMsg.hidden = true;
-    errorMsg.hidden   = true;
+    const linhas = [
+      `Olá, Dra. Ana Celeste!`,
+      ``,
+      `*Nome:* ${nome}`,
+      `*Sou:* ${tipoTxt}`,
+      email ? `*E-mail:* ${email}` : null,
+      ``,
+      mensagem
+    ].filter(l => l !== null).join('\n');
 
-    // Se não há form ID configurado, redireciona para WhatsApp como fallback
-    if (!endpoint) {
-      const texto = encodeURIComponent(
-        `Olá, Dra. Ana Celeste!\n\nMeu nome é ${nome}.\n\n${mensagem}`
-      );
-      window.open(`https://wa.me/558599242529?text=${texto}`, '_blank');
-      submitBtn.disabled    = false;
-      submitBtn.textContent = 'Enviar mensagem';
-      return;
-    }
+    window.open(`https://wa.me/558599242529?text=${encodeURIComponent(linhas)}`, '_blank');
 
-    // Envio via AJAX para Formspree
-    try {
-      const data = new FormData(form);
-      const res  = await fetch(endpoint, {
-        method:  'POST',
-        body:    data,
-        headers: { 'Accept': 'application/json' }
-      });
+    // Feedback visual
+    submitBtn.hidden  = true;
+    successMsg.hidden = false;
+    successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-      if (res.ok) {
-        form.reset();
-        submitBtn.hidden  = true;
-        successMsg.hidden = false;
-        successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      } else {
-        throw new Error('Formspree error ' + res.status);
-      }
-    } catch {
-      submitBtn.disabled    = false;
-      submitBtn.textContent = 'Tentar novamente';
-      errorMsg.hidden = false;
-    }
+    // Reseta após 4s para permitir novo envio
+    setTimeout(() => {
+      form.reset();
+      submitBtn.hidden  = false;
+      successMsg.hidden = true;
+    }, 4000);
   });
 }
