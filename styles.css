@@ -959,3 +959,161 @@ ul { list-style: none; }
 @media (min-width: 1024px) {
   .pub-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ============================================================
+   HERO IMAGE — MOBILE FIX
+   ============================================================ */
+@media (max-width: 767px) {
+  .hero__image {
+    aspect-ratio: 4 / 3;
+    max-height: 340px;
+    object-position: center 15%;
+  }
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes float-card {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.65; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+
+@keyframes gradient-breathe {
+  0%, 100% { opacity: 0.60; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.08); }
+}
+
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes count-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer-line {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* ============================================================
+   MOTION — HERO
+   ============================================================ */
+/* Floating name card on hero image */
+.hero__image-card {
+  animation: float-card 5s ease-in-out infinite;
+}
+
+/* Subtle breathing glow behind hero image */
+.hero::before {
+  animation: gradient-breathe 8s ease-in-out infinite;
+}
+
+/* ============================================================
+   MOTION — WHATSAPP FAB
+   ============================================================ */
+.whatsapp-fab {
+  position: fixed;
+}
+.whatsapp-fab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #25D366;
+  animation: pulse-ring 2.2s ease-out infinite;
+  z-index: -1;
+}
+
+/* ============================================================
+   MOTION — CARDS
+   ============================================================ */
+/* Sobre stats counter pop (triggered via JS class) */
+.sobre__stat.popped .sobre__stat-val {
+  animation: count-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Shimmer border on hover for esp-card */
+.esp-card {
+  background-image: none;
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease),
+              border-color 0.3s var(--ease);
+}
+.esp-card:hover {
+  border-color: var(--c-sage-light);
+}
+.esp-card--home:hover {
+  border-color: var(--c-warm);
+}
+
+/* Slide-up on blog posts */
+.post-card {
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease),
+              border-color 0.3s var(--ease);
+}
+.post-card:hover {
+  border-color: var(--c-sage-light);
+}
+
+/* Pub card slide */
+.pub-card {
+  transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease),
+              border-color 0.25s var(--ease);
+}
+.pub-card:hover {
+  border-color: var(--c-sage-light);
+}
+
+/* Criteria items in B2B */
+.criteria-item {
+  transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.criteria-item:hover {
+  transform: translateX(4px);
+}
+
+/* ============================================================
+   MOTION — B2B TAG FIX (legibility on dark bg)
+   ============================================================ */
+.b2b .tag--warm {
+  color: #e8ccaa;
+  background: rgba(232, 204, 170, 0.15);
+  border-color: rgba(232, 204, 170, 0.40);
+}
+
+/* ============================================================
+   MOTION — CONTATO OPTIONS
+   ============================================================ */
+.contato__opt {
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+              border-color 0.2s var(--ease);
+}
+.contato__opt:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   MOTION — REDUCE (acessibilidade)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .hero__image-card,
+  .hero::before,
+  .whatsapp-fab::before {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
