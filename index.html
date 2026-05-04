@@ -594,7 +594,16 @@
           </div>
         </div>
 
-        <form class="contato__form reveal reveal-delay-1" id="contactForm" novalidate>
+        <form
+          class="contato__form reveal reveal-delay-1"
+          id="contactForm"
+          novalidate
+          data-formspree-id="SEU_FORM_ID"
+        >
+          <!-- Honeypot anti-spam (oculto por CSS) -->
+          <input type="text" name="_gotcha" tabindex="-1" aria-hidden="true" style="display:none">
+          <input type="hidden" name="_subject" value="Novo contato — Ana Celeste PhD">
+
           <div class="form-group">
             <label for="nome">Nome completo</label>
             <input type="text" id="nome" name="nome" placeholder="Seu nome" autocomplete="name" required>
@@ -614,7 +623,19 @@
             <label for="mensagem">Mensagem</label>
             <textarea id="mensagem" name="mensagem" rows="4" placeholder="Como posso ajudar?"></textarea>
           </div>
-          <button type="submit" class="btn btn--primary btn--full">Enviar mensagem</button>
+          <button type="submit" class="btn btn--primary btn--full" id="formSubmitBtn">
+            Enviar mensagem
+          </button>
+
+          <!-- Estados de feedback (ocultos até ação) -->
+          <div class="form-feedback form-feedback--success" id="formSuccess" role="alert" aria-live="polite" hidden>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Mensagem enviada! Responderei em breve.
+          </div>
+          <div class="form-feedback form-feedback--error" id="formError" role="alert" aria-live="polite" hidden>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Algo deu errado. Tente pelo <a href="https://wa.me/5585992242529" target="_blank" rel="noopener noreferrer">WhatsApp</a>.
+          </div>
         </form>
 
       </div>

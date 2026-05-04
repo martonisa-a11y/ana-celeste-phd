@@ -137,14 +137,68 @@ document.querySelectorAll('.link').forEach(link => {
   });
 });
 
-// ── Contact form ───────────────────────────────────────────────
+// ── Contact form — Formspree AJAX ─────────────────────────────
 const form = document.getElementById('contactForm');
 if (form) {
-  form.addEventListener('submit', e => {
+  const submitBtn  = document.getElementById('formSubmitBtn');
+  const successMsg = document.getElementById('formSuccess');
+  const errorMsg   = document.getElementById('formError');
+
+  // Recupera o form ID do atributo data- (editar data-formspree-id no HTML)
+  const formId = form.dataset.formspreeId;
+  const endpoint = formId && formId !== 'SEU_FORM_ID'
+    ? `https://formspree.io/f/${formId}`
+    : null;
+
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    const btn = form.querySelector('[type="submit"]');
-    btn.textContent = 'Mensagem enviada ✓';
-    btn.disabled    = true;
-    btn.style.background = 'var(--c-sage-light)';
+
+    // Valida campos obrigatórios
+    const nome     = form.querySelector('#nome').value.trim();
+    const mensagem = form.querySelector('#mensagem').value.trim();
+    if (!nome || !mensagem) {
+      form.querySelector('#nome').reportValidity();
+      return;
+    }
+
+    // Estado: carregando
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'Enviando…';
+    successMsg.hidden = true;
+    errorMsg.hidden   = true;
+
+    // Se não há form ID configurado, redireciona para WhatsApp como fallback
+    if (!endpoint) {
+      const texto = encodeURIComponent(
+        `Olá, Dra. Ana Celeste!\n\nMeu nome é ${nome}.\n\n${mensagem}`
+      );
+      window.open(`https://wa.me/5585992242529?text=${texto}`, '_blank');
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'Enviar mensagem';
+      return;
+    }
+
+    // Envio via AJAX para Formspree
+    try {
+      const data = new FormData(form);
+      const res  = await fetch(endpoint, {
+        method:  'POST',
+        body:    data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        form.reset();
+        submitBtn.hidden  = true;
+        successMsg.hidden = false;
+        successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        throw new Error('Formspree error ' + res.status);
+      }
+    } catch {
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'Tentar novamente';
+      errorMsg.hidden = false;
+    }
   });
 }
