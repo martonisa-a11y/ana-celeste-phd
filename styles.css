@@ -209,10 +209,7 @@ ul { list-style: none; }
   flex-shrink: 0; 
   display: block;
 }
-/* Footer logo — versão invertida para fundo escuro */
-.footer__logo-img { 
-  filter: brightness(0) invert(1) opacity(0.85); 
-}
+/* Footer logo */
 .nav__links { display: none; align-items: center; gap: 2.5rem; }
 .nav__links a:not(.btn) {
   font-size: 0.9375rem;
