@@ -810,8 +810,8 @@ ul { list-style: none; }
   border-bottom: 1px solid rgba(247,244,238,0.10);
   margin-bottom: 1.5rem;
 }
-.footer__brand img { height: 40px; width: auto; filter: brightness(0) invert(1); opacity: 0.85; margin-bottom: 1rem; }
-.footer__brand p { font-size: 0.875rem; color: rgba(247,244,238,0.48); line-height: 1.75; }
+.footer__brand img { height: 50px; width: auto; margin-bottom: 1rem; }
+.footer__brand p { font-size: 0.875rem; color: rgba(247,244,238,0.7); line-height: 1.75; }
 .footer__nav h4 {
   font-family: var(--f-mono);
   font-size: 0.6875rem;
